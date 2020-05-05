@@ -3,6 +3,7 @@ Instagram Bot with Selenium Webdriver
 
 # Installation
 1.clone repostory with git or directly install instabot.py file
+
 2.Move file to your project bin
 
 `from instabot import *`
