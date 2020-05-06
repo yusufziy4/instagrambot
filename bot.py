@@ -1,4 +1,4 @@
-from module import Bot
+from instagrambot import *
 
 bot = Bot("bot_olmayan_bot","yzh54321")
 bot.login()
