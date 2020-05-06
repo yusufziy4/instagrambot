@@ -93,9 +93,9 @@ class Bot() :
         self.chrome.get("https://www.instagram.com")
 
     def like(self) :
-        likebtn = self.chrome.find_element_by_css_selector(".fr66n")
-        if likebtn != "null" :
-            likebtn.click()
+        print(self.chrome.execute_script("return document.querySelector(\".fr66n > button > svg[aria-label='Like']\")"))
+        if self.chrome.execute_script("return document.querySelector(\".fr66n > button > svg[aria-label='Like']\")") != "null" :
+            print("click")
 
     def save_to_archive(self,post) :
         sleep(1)
