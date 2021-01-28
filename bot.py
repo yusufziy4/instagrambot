@@ -1,6 +1,7 @@
 from instagrambot import *
+import json
 
-bot = Bot("bot_olmayan_bot","yzh54321")
-bot.login()
-
-bot.users_all_posts(["hacksmith"],like=True,comment=False,amount=1,save=True,comment_options=["Wow!","Amazing"])
+with open("creds.json", "r") as settings:
+    creds = json.loads(settings.read())
+    bot = Bot(creds["username"],creds["password"])
+    bot.login()

@@ -7,6 +7,7 @@ import random
 from selenium.webdriver.support import ui
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+import json
 
 
 class Bot() :
@@ -15,8 +16,10 @@ class Bot() :
 
         options = webdriver.ChromeOptions()
         options.add_argument("--lang=en")
-        options.add_argument("user-data-dir=C:/Users/yuszi/AppData/Local/Google/Chrome/User Data/Default")
-        self.chrome = webdriver.Chrome(chrome_options=options)
+        with open("creds.json") as settings:
+            creds = json.loads(settings.read())
+            options.add_argument("user-data-dir="+creds["userDataDir"])
+        self.chrome = webdriver.Chrome(chrome_options=options,executable_path="./chromedriver")
         self.action = webdriver.ActionChains(self.chrome)
         self.chrome.get("https://instagram.com/accounts/login")
 
@@ -31,13 +34,16 @@ class Bot() :
 
     def login(self) :
         searchInput = self.chrome.find_elements_by_css_selector("input[placeholder='Search']")
-        if  (bool(searchInput) == False) :
+        usernameInput = self.chrome.find_elements_by_name("username")
+        passwordInput = self.chrome.find_elements_by_name("password")
+        login = self.chrome.find_elements_by_css_selector("button[type='submit']")
+        if not searchInput and usernameInput and passwordInput and login:  
             self.chrome.implicitly_wait(5)
             sleep(1)
 
-            usernameInput = self.chrome.find_elements_by_name("username")[0]
-            passwordInput = self.chrome.find_elements_by_name("password")[0]
-            login = self.chrome.find_elements_by_css_selector("button[type='submit']")[0]
+            usernameInput = usernameInput[0]
+            passwordInput = passwordInput[0]
+            login = login[0]
 
             sleep(2)
 
@@ -47,9 +53,7 @@ class Bot() :
             login.click()
 
             sleep(1)
-            self.closenotf()
-            print("Hello Adamım")
-
+        self.closenotf()
     def closenotf(self) :
 
         buton = self.chrome.find_elements_by_css_selector(".HoLwm")
