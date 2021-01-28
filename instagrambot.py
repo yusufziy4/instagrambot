@@ -210,12 +210,14 @@ class Bot() :
                     closebtn.click()
                     sleep(1)
     
-    def get_followers(self,hesap,yer) :
+    def get_followers(self,hesap,yer=False,return_back=False,find_self=False) :
 
-        if os.path.exists(yer) :
+        if os.path.exists(yer) and yer :
             os.remove(yer)
 
-        self.find_user(hesap)
+        if find_self:
+            self.find_user(hesap)
+        followers = []
         sleep(1)
 
         takipci = self.chrome.find_elements_by_css_selector(".g47SY")[1]
@@ -238,7 +240,8 @@ class Bot() :
         followerDescriptionBox = self.chrome.find_elements_by_css_selector(".wFPL8")
         len(followerDescriptionBox)
         self.chrome.implicitly_wait(15)
-        f = open(yer,"w+",encoding="utf-8")
+        if yer:
+            f = open(yer,"w+",encoding="utf-8")
         number = len(followerBox)
         lineCount = 0
         for i in range(number) :
@@ -247,30 +250,42 @@ class Bot() :
             followerName = follower.get_attribute("innerHTML")
             followerLink = follower.get_attribute("href")
             followerDescription = followerDes.get_attribute("innerHTML")
+
+            followers.append({
+                name: followerName,
+                link: followerLink,
+                desc:followerDescription
+            })
+
             if followerDescription == "" :
                 followerDescription = self.print + " Empty"
             self.chrome.implicitly_wait(3)
-            f.write("\nFollower Name: " + followerName)
-            f.write("\nFollower Description: " + followerDescription)
-            f.write("\nFollower Link: " + followerLink)
-            f.write("\n")
+            if yer:
+                f.write("\nFollower Name: " + followerName)
+                f.write("\nFollower Description: " + followerDescription)
+                f.write("\nFollower Link: " + followerLink)
+                f.write("\n")
             lineCount+=1
 
 
-        f.write("\n" + self.print + " Follower Count : "+str(followerCount))
-        f.write("\n" + self.print +" Follower Name Pulled : "+str(lineCount))
+        if yer:
+            f.write("\n" + self.print + " Follower Count : "+str(followerCount))
+            f.write("\n" + self.print +" Follower Name Pulled : "+str(lineCount))
 
-        f.close()
+            f.close()
 
-        closebtn = self.chrome.find_elements_by_css_selector("body > div.RnEpo.Yx5HN > div > div:nth-child(1) > div > div:nth-child(3) > button")[0]
+        closebtn = self.chrome.find_element_by_css_selector(".WaOAr  > .wpO6b")
         self.chrome.implicitly_wait(5)
         self.chrome.implicitly_wait(2)
         sleep(1)
         closebtn.click()
-
+    
         sleep(3)
 
-        self.chrome.get("https://www.instagram.com")
+        if return_back:
+            self.chrome.get("https://www.instagram.com")
+
+        return followers
     
     def read_stories(self) :
         
@@ -384,7 +399,10 @@ class Bot() :
                     sleep(1)
             sleep(1)
 
-
+    def findPeople(self, seedUser,limit):
+        self.chrome.get("https://www.instagram.com/"+seedUser)
+        fws = self.get_followers(seedUser)
+        print(fws)
     def quit_browser(self) :
         print(self.print,"Quiting Browser")
         self.chrome.quit()
